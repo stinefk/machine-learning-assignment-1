@@ -107,9 +107,8 @@ def log_loss(true, prediction):
     prediction = np.clip(prediction, 1e-15, 1- 1e-15)
     
     #Returns the mathemathical calculation
-    return -np.mean(true, * np.log(prediction) + (1 - true) * np.log(1 - prediction))
-
-
+    return -np.mean(true * np.log(prediction) + (1 - true) * np.log(1 - prediction))
+ 
 #Define weight and bias
 weight = np.zeros(x_training.shape[1])
 bias = 0
@@ -120,30 +119,38 @@ epochs = 100
 
 # Loop through all iterations to optain the optimal value of m and c
 for iterations in range(epochs):
+
     for i in range(len(x_training)):
 
-        #Compute the prediction
+        #compute prediction
         z = np.dot(x_training[i], weight) + bias
-        prediction = sigmoid(z)
+        y_pred = sigmoid(z)
+        
+        sgd_weight = (y_pred - y_training[i]) * x_training[i]
+        sgd_bias = y_pred - y_training[i]
 
-        # Compute the gradients
-        sgd_weight = x_training[i] * (y_training[i] - sigmoid(np.dot(weight.T, x_training[i] + bias)))
-        sgd_bias = y_training[i] * sigmoid( np.dot(weight.T, x_training[i]) + bias)
+        # compute the gradients
+        # sgd_weight = x_training[i] * (y_training[i] - sigmoid(np.dot(weight.T, x_training[i] + bias)))
+        # sgd_bias = y_training[i] * sigmoid( np.dot(weight.T, x_training[i]) + bias)
 
         # update m and c
-        weight = weight - learning_rate * sgd_weight
-        bias = bias - learning_rate * sgd_bias
+        weight -= learning_rate * sgd_weight
+        bias -= learning_rate * sgd_bias
 
+        pred_training = sigmoid(np.dot(x_training, weight) + bias)
+        loss = log_loss(y_training, pred_training)
+        print(f'Epoch {epochs + 1}/{epochs}, Loss: {loss}')
 
-# Calculate the predictions on the test set
-pred_test = []
+# Calculate the predictions with the test set
+pred = []
 
 for i in range(len(x_test)):
     z = np.dot(weight, x_test[i]) + bias
-    y_test_pred = sigmoid(z)
+    y_pred = sigmoid(z)
 
-    if np.any(y_test_pred >= 0.5):
-        pred_test.append(1)
-
+    if np.any(y_pred >= 0.5):
+        pred.append(1)
     else:
-        pred_test.append(0)
+        pred.append(0)
+
+print("Predictions: {}", pred)
