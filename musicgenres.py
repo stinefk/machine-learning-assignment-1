@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
+
 
 #--------------------------------------------------
 # PROBLEM 1A
@@ -105,17 +107,21 @@ def log_loss(true, prediction):
 
     #Can clip the prediction to avoid log(0)
     prediction = np.clip(prediction, 1e-15, 1- 1e-15)
-    
     #Returns the mathemathical calculation
     return -np.mean(true * np.log(prediction) + (1 - true) * np.log(1 - prediction))
- 
+
+# function for calculating the accuracy of the training
+def accuracy(y_pred_acc, y_test_acc):
+    return np.sum(y_pred_acc==y_test_acc)/len(y_test)
+
+
 #Define weight and bias
 weight = np.zeros(x_training.shape[1])
 bias = 0
 
 #define learning rate and iterations
-learning_rate = 0.0001
-epochs = 100
+learning_rate = 0.0001 #changeable
+epochs = 10 #changable
 
 # Loop through all iterations to optain the optimal value of m and c
 for iterations in range(epochs):
@@ -126,20 +132,18 @@ for iterations in range(epochs):
         z = np.dot(x_training[i], weight) + bias
         y_pred = sigmoid(z)
         
+        # compute the gradients
         sgd_weight = (y_pred - y_training[i]) * x_training[i]
         sgd_bias = y_pred - y_training[i]
 
-        # compute the gradients
-        # sgd_weight = x_training[i] * (y_training[i] - sigmoid(np.dot(weight.T, x_training[i] + bias)))
-        # sgd_bias = y_training[i] * sigmoid( np.dot(weight.T, x_training[i]) + bias)
-
-        # update m and c
+        # update weight and bias
         weight -= learning_rate * sgd_weight
         bias -= learning_rate * sgd_bias
 
         pred_training = sigmoid(np.dot(x_training, weight) + bias)
         loss = log_loss(y_training, pred_training)
-        print(f'Epoch {epochs + 1}/{epochs}, Loss: {loss}')
+        print(f'Epoch {iterations + 1}/{epochs}, Loss: {loss}')
+
 
 # Calculate the predictions with the test set
 pred = []
@@ -153,4 +157,8 @@ for i in range(len(x_test)):
     else:
         pred.append(0)
 
-print("Predictions: {}", pred)
+pred_test = np.array(pred)
+
+# Calculate the accuracy of the training
+acc = accuracy(pred, y_test)
+print(f'The accuracy of the training is:" {acc}')
