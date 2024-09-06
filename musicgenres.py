@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import r2_score
-
+from sklearn.metrics import *
 
 #--------------------------------------------------
 # PROBLEM 1A
@@ -162,17 +161,29 @@ print(f'The accuracy of the training set is : {acc_training_set}')
 
 
 # #Plot the log loss and accuracy of the training set
-# plt.figure()
-# plt.title('Training set')
-# plt.scatter(epochs, log_loss_list, color='pink')
+plt.figure()
+plt.title('Training set')
+plt.plot(log_loss_list, color='pink')
 
-# # Set the labels for the plot
-# plt.xlabel('Epochs')
-# plt.ylabel('Log Loss')      
-# plt.grid(True)
-# plt.legend()
+# Set the labels for the plot
+plt.xlabel('Epochs')
+plt.ylabel('Log Loss')      
+plt.grid(True)
+
+#plt.show()
+
+# #Plot the log loss and accuracy of the training set
+plt.figure()
+plt.title('Training set')
+plt.plot(pred_training_list, color='purple')
+
+# Set the labels for the plot
+plt.xlabel('Epochs')
+plt.ylabel('Log Loss')      
+plt.grid(True)
 
 # plt.show()
+
 
 #--------------------------------------------------
 # PROBLEM 2B
@@ -198,9 +209,20 @@ print(f'The accuracy of the test set is: {acc_test_set}')
 
 
 #--------------------------------------------------
-# PROBLEM 2C
+# PROBLEM 2C 
+
 
 
 #--------------------------------------------------
 # PROBLEM 3A
+# Create a confusion matrix for the classification. 
 
+#Create a numpy array of correct labels, we already have a numpy array of the predicted labels
+true = np.array(y_test)
+
+#Compute the confusion matrix & display
+confusion_matrix_test_set = confusion_matrix(true, pred_test)
+confusion_matrix_display = ConfusionMatrixDisplay(confusion_matrix_test_set, display_labels=['pop', 'classical'])
+
+confusion_matrix_display.plot()
+plt.show()
