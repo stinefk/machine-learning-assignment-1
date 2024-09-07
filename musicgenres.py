@@ -16,8 +16,9 @@ print("There are {} sample songs in the dataset".format(sample_songs))
 # Counting how many features are in the dataset
 features = len(dataset.axes[1])
 print("There are {} features in the dataset".format(features))
-#Removing the Genre, Artist Namee, Track Name and Track ID as features for classifying the genre - the count is 14.
 
+#--------------------------------------------------
+# PROBLEM 1b
 
 # Extracting all rows for where the genre is Pop, assigning label = 1 and the only features are liveness and loudnes
 pop_songs = dataset[dataset['genre'] == 'Pop'][['liveness', 'loudness']]
@@ -122,10 +123,9 @@ weight = np.zeros(x_training.shape[1])
 bias = 0
 
 #define learning rate and iterations
-learning_rate = 0.001 #changeable
-epochs = 1
+learning_rate = 0.0001 #changeable
+epochs = 100
 
-pred_training_list = []
 log_loss_list = []
 
 # Loop through all iterations to optain the optimal value of m and c
@@ -145,17 +145,18 @@ for iterations in range(epochs):
         weight -= learning_rate * sgd_weight
         bias -= learning_rate * sgd_bias
 
-        #Calculate log loss by calculating the predictions
-        pred_training = sigmoid(np.dot(x_training[i], weight) + bias)
-        loss = log_loss(y_training, pred_training)
-        log_loss_list.append(loss)
-        pred_training_list.append(1 if pred_training >= 0.5 else 0)
+    #Calculate log loss by calculating the predictions
+    pred_training = sigmoid(np.dot(x_training, weight) + bias)
+    
+    loss = log_loss(y_training, pred_training)
+    log_loss_list.append(loss)
+    #pred_training_list.append(1 if pred_training >= 0.5 else 0)
 
-        print(f'Epoch {iterations + 1}/{epochs}, Loss: {loss}')
+    print(f'Epoch {iterations + 1}/{epochs}, Loss: {loss}')
 
 # Calculate the accuracy of the training test
-pred_training = np.array(pred_training_list)
-acc_training_set = accuracy(pred_training, y_training)
+pred_training_list = np.where(pred_training >= 0.5, 1, 0)
+acc_training_set = accuracy(pred_training_list, y_training)
 
 print(f'The accuracy of the training set is : {acc_training_set}')
 
@@ -176,11 +177,6 @@ plt.grid(True)
 plt.figure()
 plt.title('Training set')
 plt.plot(pred_training_list, color='purple')
-
-# Set the labels for the plot
-plt.xlabel('Epochs')
-plt.ylabel('Log Loss')      
-plt.grid(True)
 
 # plt.show()
 
@@ -206,7 +202,6 @@ pred_test = np.array(pred_test_list)
 # Calculate the accuracy of the training
 acc_test_set = accuracy(pred_test, y_test)
 print(f'The accuracy of the test set is: {acc_test_set}')
-
 
 #--------------------------------------------------
 # PROBLEM 2C 
