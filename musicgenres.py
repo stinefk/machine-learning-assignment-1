@@ -145,7 +145,7 @@ for iterations in range(epochs):
         weight -= learning_rate * sgd_weight
         bias -= learning_rate * sgd_bias
 
-    #Calculate log loss by calculating the predictions
+    #Calculate log loss by calculating the new prediction
     pred_training = sigmoid(np.dot(x_training, weight) + bias)
     
     loss = log_loss(y_training, pred_training)
@@ -159,26 +159,6 @@ pred_training_list = np.where(pred_training >= 0.5, 1, 0)
 acc_training_set = accuracy(pred_training_list, y_training)
 
 print(f'The accuracy of the training set is : {acc_training_set}')
-
-
-# #Plot the log loss and accuracy of the training set
-plt.figure()
-plt.title('Training set')
-plt.plot(log_loss_list, color='pink')
-
-# Set the labels for the plot
-plt.xlabel('Epochs')
-plt.ylabel('Log Loss')      
-plt.grid(True)
-
-#plt.show()
-
-# #Plot the log loss and accuracy of the training set
-plt.figure()
-plt.title('Training set')
-plt.plot(pred_training_list, color='purple')
-
-# plt.show()
 
 
 #--------------------------------------------------
@@ -203,10 +183,18 @@ pred_test = np.array(pred_test_list)
 acc_test_set = accuracy(pred_test, y_test)
 print(f'The accuracy of the test set is: {acc_test_set}')
 
-#--------------------------------------------------
-# PROBLEM 2C 
 
+# #Plot the log loss and accuracy of the training set
+plt.figure()
+plt.title('Training set')
+plt.plot(log_loss_list, color='pink')
 
+# Set the labels for the plot
+plt.xlabel('Epochs')
+plt.ylabel('Log Loss')      
+plt.grid(True)
+
+# plt.show()
 
 #--------------------------------------------------
 # PROBLEM 3A
